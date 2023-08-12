@@ -4,30 +4,45 @@ using UnityEngine;
 
 public class RandomSpawner : MonoBehaviour
 {
-    List<Transform> _spawnPoints;
-    public Transform spawnUp;
-    public Transform spawnDown;
-    public Transform spawnLeft;
-    public Transform spawnRight;
+    public int enemyCount;
+    public float spawnDelay; // Delay between spawns in seconds
+
+    List<GameObject> _spawnPoints;
+    public GameObject spawnUp;
+    public GameObject spawnDown;
+    public GameObject spawnLeft;
+    public GameObject spawnRight;
+
     public GameObject enemy;
 
-    void Start() {
-       _spawnPoints.Add(spawnUp);
-       _spawnPoints.Add(spawnDown);
-       _spawnPoints.Add(spawnLeft);
-       _spawnPoints.Add(spawnRight);
+    void Start()
+    {
+        _spawnPoints = new List<GameObject>();
+        _spawnPoints.Add(spawnUp);
+        _spawnPoints.Add(spawnDown);
+        _spawnPoints.Add(spawnLeft);
+        _spawnPoints.Add(spawnRight);
+
+        StartCoroutine(SpawnEnemies());
     }
 
-    public void Spawn() {
+    IEnumerator SpawnEnemies()
+    {
+        for (int i = 0; i < enemyCount; i++)
+        {
+            Spawn();
+            yield return new WaitForSeconds(spawnDelay);
+        }
+    }
+
+    public void Spawn()
+    {
         int index = UnityEngine.Random.Range(0, 4);
+        Debug.Log("Random index: " + index);
 
-        Transform randomSpawnPoint = _spawnPoints[index];
+        GameObject randomSpawnPoint = _spawnPoints[index];
 
-        Instantiate(enemy.transform, randomSpawnPoint.position, randomSpawnPoint.rotation);
-
-
+        Instantiate(enemy, randomSpawnPoint.transform.position, randomSpawnPoint.transform.rotation);
+        Debug.Log("Spawned enemy at: " + randomSpawnPoint.transform.position);
     }
-
-    
-
 }
